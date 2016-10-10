@@ -1,1 +1,1 @@
-bot: bin/hubot -a slack -n dipper
+web: bin/hubot -a slack -n dipper
