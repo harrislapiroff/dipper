@@ -35,7 +35,7 @@ const togglClient = {
 
 const robot = function(robot) {
 
-  robot.hear(/who[\s]?['’i]?s working/i, (res) => {
+  robot.hear(/who( is|['’]?s) working/i, (res) => {
     res.send('Give me a moment to check.')
     axios.all([
       togglClient.getWorkspaceDashboard(TOGGL_WORKSPACE_ID),
