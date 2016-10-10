@@ -26,23 +26,28 @@ const togglClient = {
   },
   getWorkspaceProjects: function(id) {
     return togglAxios.get(`https://www.toggl.com/api/v8/workspaces/${id}/projects`)
+  },
+  getWorkspaceClients: function (id) {
+    return togglAxios.get(`https://www.toggl.com/api/v8/workspaces/${id}/clients`)
   }
 }
 
 
 const robot = function(robot) {
 
-  robot.hear(/who['’]?s working/i, (res) => {
+  robot.hear(/who[\s]?['’i]?s working/i, (res) => {
     res.send('Give me a moment to check.')
     axios.all([
       togglClient.getWorkspaceDashboard(TOGGL_WORKSPACE_ID),
       togglClient.getWorkspaceUsers(TOGGL_WORKSPACE_ID),
       togglClient.getWorkspaceProjects(TOGGL_WORKSPACE_ID),
+      togglClient.getWorkspaceClients(TOGGL_WORKSPACE_ID),
     ])
-    .then(axios.spread((dashboardReq, usersReq, projectsReq) => {
+    .then(axios.spread((dashboardReq, usersReq, projectsReq, clientsReq) => {
       const dashboard = dashboardReq.data
       const users = usersReq.data
       const projects = projectsReq.data
+      const clients = clientsReq.data
       // Currently active toggl entries have negative duration
       const activeEntries = dashboard.activity.filter((entry) => entry.duration < 0)
 
@@ -55,10 +60,11 @@ const robot = function(robot) {
       activeEntries.forEach((entry) => {
         const entryUser = users.filter((user) => user.id === entry.user_id)[0]
         const entryProject = projects.filter((project) => project.id === entry.project_id)[0]
+        const entryClient = clients.filter((client) => client.id === entryProject.cid)[0]
         // toggl duration is a negative seconds timestamp of when the entry timer started
         // Date.now() + entry.duration * 1000 gives the approximate duration since the entry started in ms
         const entryDuration = moment.duration(Date.now() + entry.duration * 1000)
-        res.send(`*${entryUser.fullname}* has been working on *${entry.description} (${entryProject.name})* for *${entryDuration.humanize()}*.`)
+        res.send(`*${entryUser.fullname}* has been working on *${entry.description} (${entryClient.name}: ${entryProject.name})* for *${entryDuration.humanize()}*.`)
       })
     }))
     .catch((error) => {
