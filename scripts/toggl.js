@@ -32,7 +32,7 @@ const togglClient = {
 
 const robot = function(robot) {
 
-  robot.hear(/who's working/i, (res) => {
+  robot.hear(/who['’]?s working/i, (res) => {
     res.send('Give me a moment to check.')
     axios.all([
       togglClient.getWorkspaceDashboard(TOGGL_WORKSPACE_ID),
@@ -58,7 +58,7 @@ const robot = function(robot) {
         // toggl duration is a negative seconds timestamp of when the entry timer started
         // Date.now() + entry.duration * 1000 gives the approximate duration since the entry started in ms
         const entryDuration = moment.duration(Date.now() + entry.duration * 1000)
-        res.send(`${entryUser.fullname} has been working on ${entry.description} (${entryProject.name}) for ${entryDuration.humanize()}.`)
+        res.send(`*${entryUser.fullname}* has been working on *${entry.description} (${entryProject.name})* for *${entryDuration.humanize()}*.`)
       })
     }))
     .catch((error) => {
