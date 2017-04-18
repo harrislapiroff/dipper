@@ -5,7 +5,7 @@
   "author": "Harris Lapiroff <harris@chromamine.com>",
   "description": "A simple helpful robot for Little Weaver",
   "dependencies": {
-    "axios": "^0.14.0",
+    "axios": "^0.16.1",
     "hubot": "^2.19.0",
     "hubot-diagnostics": "0.0.1",
     "hubot-google-images": "^0.2.6",
