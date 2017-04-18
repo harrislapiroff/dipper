@@ -3,6 +3,10 @@
 //
 // Notes:
 //   Requires environment variables TOGGL_WORKSPACE_ID and TOGGL_API_TOKEN to be set
+//
+// Commands:
+//   hubot who's working? - Tell me who's currently working and what they're working on
+//   who's working - Tell me who's currently working and what they're working on
 
 const axios = require('axios')
 const moment = require('moment')
